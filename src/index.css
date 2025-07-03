@@ -1,0 +1,212 @@
+/* 1. Definición de la Paleta de Colores y Fuentes */
+:root {
+  --color-primary: #20c997;
+  --color-primary-hover: #1baa80;
+  --color-accent: #fd7e14;
+  --color-background: #f8f9fa;
+  --color-surface: #ffffff;
+  --color-text: #212529;
+  --color-text-secondary: #6c757d;
+  --color-error: #dc3545;
+  --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  --border-radius: 8px;
+  --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* 2. Estilos Globales */
+body {
+  margin: 0;
+  font-family: var(--font-family);
+  background-color: var(--color-background);
+  color: var(--color-text);
+}
+
+main {
+  padding: 1rem;
+}
+
+/* 3. Estilos de Componentes Reutilizables */
+.page-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+}
+
+.form-container, .profile-container {
+  background-color: var(--color-surface);
+  padding: 2.5rem;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  width: 100%;
+  max-width: 420px;
+  box-sizing: border-box;
+  border-top: 5px solid var(--color-primary);
+}
+
+.form-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  font-size: 1.8rem;
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 2rem;
+  color: var(--color-text);
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.form-group input, .form-group select {
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid #dee2e6;
+  border-radius: var(--border-radius);
+  box-sizing: border-box;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  font-family: var(--font-family);
+  font-size: 1rem;
+}
+
+.form-group input:focus, .form-group select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(32, 201, 151, 0.25);
+}
+
+.submit-button {
+  width: 100%;
+  padding: 0.9rem;
+  border: none;
+  border-radius: var(--border-radius);
+  background-color: var(--color-primary);
+  color: white;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.submit-button:hover {
+  background-color: var(--color-primary-hover);
+}
+
+.error-message {
+  color: #721c24;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  padding: 1rem;
+  border-radius: var(--border-radius);
+  text-align: center;
+  margin-top: 1.5rem;
+}
+
+.profile-container h2 {
+  text-align: center;
+}
+
+/* 4. Estilos del Navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: var(--color-surface);
+  box-shadow: var(--box-shadow);
+}
+
+.navbar-brand a {
+  text-decoration: none;
+  color: var(--color-text);
+  font-weight: bold;
+  font-size: 1.5rem;
+}
+
+.navbar-links a {
+  margin: 0 1rem;
+  text-decoration: none;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.navbar-links a:hover {
+  color: var(--color-primary);
+}
+
+.logout-button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: var(--border-radius);
+  background-color: var(--color-accent);
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.2s;
+}
+
+.logout-button:hover {
+  background-color: #e86100;
+}
+
+/* --- ESTILOS PARA LA HERO SECTION DE LA PÁGINA DE INICIO --- */
+/* Este bloque ahora está en el lugar correcto */
+
+.hero-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  padding: 4rem 2rem;
+  min-height: 70vh;
+}
+
+.hero-content {
+  max-width: 50%;
+  flex: 1;
+}
+
+.hero-content h1 {
+  font-size: 3.5rem;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+  color: var(--color-text);
+}
+
+.hero-content p {
+  font-size: 1.2rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 2rem;
+}
+
+.hero-image {
+  max-width: 45%;
+  flex: 1;
+}
+
+.hero-image img {
+  width: 100%;
+  height: auto;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+}
+
+.cta-buttons {
+  display: flex;
+  gap: 1rem;
+}
+
+.cta-button {
+  padding: 0.9rem 1.8rem;
+  border-radius: var(--border-)}
