@@ -2,70 +2,70 @@ import { useEffect, useState } from 'react';
 import apiClient from '../api/apiClient';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import './ProfilePage.css'; // Importamos el nuevo archivo de estilos
 
-// Interfaz para la información que esperamos del usuario
 interface UserProfile {
   sub: number;
   email: string;
   rol: string;
-  nombres?: string; // Hacemos estos campos opcionales por si no vienen en el token
+  nombres?: string;
   apellidos?: string;
 }
 
 const ProfilePage = () => {
   const { logout } = useAuth();
   const navigate = useNavigate();
-  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [profile, setProfile] = useState<UserProfile | null>(null);
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
         const response = await apiClient.get('/auth/profile');
-        setUserProfile(response.data);
+        setProfile(response.data);
       } catch (err) {
-        setError('No se pudo cargar el perfil del usuario. Por favor, inicie sesión de nuevo.');
-        // Si hay un error (ej. token expirado), cerramos sesión
-        logout();
-      } finally {
-        setLoading(false);
+        setError('No se pudo cargar el perfil.');
       }
     };
     fetchProfile();
-  }, [logout]);
+  }, []);
 
   const handleLogout = () => {
     logout();
     navigate('/login');
-  }
+  };
 
-  if (loading) {
-    return <div className="page-container"><p>Cargando perfil...</p></div>;
-  }
+  // Función para obtener las iniciales del usuario para el avatar
+  const getInitials = () => {
+    if (!profile) return '';
+    const firstInitial = profile.nombres ? profile.nombres[0] : '';
+    const lastInitial = profile.apellidos ? profile.apellidos[0] : '';
+    return `${firstInitial}${lastInitial}`.toUpperCase();
+  };
 
-  if (error) {
-    return <div className="page-container"><p className="error-message">{error}</p></div>;
-  }
+  if (error) return <div className="page-container"><p className="error-message">{error}</p></div>;
+  if (!profile) return <div className="page-container"><p>Cargando perfil...</p></div>;
 
   return (
     <div className="page-container">
-      <div className="profile-container">
-        <h2>Perfil de Usuario</h2>
-        {userProfile ? (
-          <>
-            <p><strong>ID de Usuario:</strong> {userProfile.sub}</p>
-            <p><strong>Email:</strong> {userProfile.email}</p>
-            <p><strong>Rol:</strong> {userProfile.rol}</p>
-            {/* Mostramos nombres y apellidos si existen */}
-            {userProfile.nombres && <p><strong>Nombres:</strong> {userProfile.nombres}</p>}
-            {userProfile.apellidos && <p><strong>Apellidos:</strong> {userProfile.apellidos}</p>}
-            <br />
-            <button onClick={handleLogout} className="logout-button">Cerrar Sesión</button>
-          </>
-        ) : (
-          <p>No se encontró la información del perfil.</p>
-        )}
+      <div className="profile-card">
+        <div className="profile-avatar">{getInitials()}</div>
+        
+        <h2 className="profile-name">
+          {profile.nombres || ''} {profile.apellidos || ''}
+        </h2>
+
+        <p className="profile-email">{profile.email}</p>
+
+        <div className="profile-role">{profile.rol}</div>
+
+        <div className="profile-details">
+          <strong>ID de Usuario:</strong> {profile.sub}
+        </div>
+
+        <div className="profile-actions">
+          <button onClick={handleLogout} className="logout-button">Cerrar Sesión</button>
+        </div>
       </div>
     </div>
   );
