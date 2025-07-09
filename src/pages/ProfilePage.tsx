@@ -62,10 +62,6 @@ const ProfilePage = () => {
         <div className="profile-details">
           <strong>ID de Usuario:</strong> {profile.sub}
         </div>
-
-        <div className="profile-actions">
-          <button onClick={handleLogout} className="logout-button">Cerrar Sesión</button>
-        </div>
       </div>
     </div>
   );

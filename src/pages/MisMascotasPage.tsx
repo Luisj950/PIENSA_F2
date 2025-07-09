@@ -67,9 +67,7 @@ const MisMascotasPage = () => {
     />
   ))}
 </div>
-         : (
-          <p>Aún no has registrado ninguna mascota.</p>
-        )
+         
       </div>
     </div>
   );
