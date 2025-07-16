@@ -1,82 +1,28 @@
-// src/context/AuthContext.jsx
+// src/context/AuthContext.tsx
 
-import { createContext, useState, useContext, useEffect, type ReactNode } from 'react';
-import apiClient from '../api/apiClient';
-import { jwtDecode } from 'jwt-decode'; // <-- 1. IMPORTAR jwt-decode
+import { useState, createContext, useContext, useEffect, type ReactNode } from 'react';
+import { jwtDecode } from 'jwt-decode';
 
-// --- 2. DEFINIR LA INTERFAZ PARA EL USUARIO Y EL CONTEXTO ---
-// Esto nos da autocompletado y seguridad de tipos.
+// Interfaz que define la estructura de los datos del usuario decodificados del token
 interface User {
-  sub: number;    // Subject (ID del usuario)
+  sub: number;
   email: string;
-  rol: string;    // ¡Aquí está nuestro rol!
-  iat: number;    // Issued at (fecha de creación del token)
-  exp: number;    // Expiration time (fecha de expiración)
+  rol: string;
+  nombres?: string;
+  apellidos?: string;
+  telefono?: string;
 }
 
+// Interfaz para el valor que proveerá el contexto
 interface AuthContextType {
-  user: User | null; // Cambiamos 'token' por 'user'
   isAuthenticated: boolean;
-  login: (token: string) => void;
+  user: User | null;
+  token: string | null;
+  login: (newToken: string) => void;
   logout: () => void;
 }
 
-const AuthContext = createContext<AuthContextType | null>(null);
-
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  // --- 3. CAMBIAR EL ESTADO DE 'token' A 'user' ---
-  // Ahora el estado principal será el objeto de usuario completo.
-  const [user, setUser] = useState<User | null>(null);
-
-  useEffect(() => {
-    // Al cargar la app, intentamos recuperar el token y establecer el usuario
-    const token = localStorage.getItem('token');
-    if (token) {
-      const decodedUser: User = jwtDecode(token);
-
-      // Comprobamos si el token ha expirado
-      if (decodedUser.exp * 1000 > Date.now()) {
-        setUser(decodedUser);
-        apiClient.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      } else {
-        // Si el token ha expirado, lo limpiamos
-        localStorage.removeItem('token');
-      }
-    }
-  }, []);
-
-  // --- 4. ACTUALIZAR LA FUNCIÓN DE LOGIN ---
-  const login = (token: string) => {
-    // Cuando el usuario hace login, decodificamos el token
-    const decodedUser: User = jwtDecode(token);
-    
-    // Guardamos el token en localStorage para futuras sesiones
-    localStorage.setItem('token', token);
-    
-    // Configuramos el header de apiClient para las siguientes peticiones
-    apiClient.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-
-    // Actualizamos el estado del usuario en la aplicación
-    setUser(decodedUser);
-  };
-
-  // --- 5. ACTUALIZAR LA FUNCIÓN DE LOGOUT ---
-  const logout = () => {
-    localStorage.removeItem('token');
-    delete apiClient.defaults.headers.common['Authorization'];
-    setUser(null);
-  };
-
-  // --- 6. EXPONER EL 'user' EN LUGAR DEL 'token' ---
-  const value = {
-    user,
-    isAuthenticated: !!user, // La autenticación ahora depende de si hay un objeto 'user'
-    login,
-    logout,
-  };
-
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-};
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
@@ -84,4 +30,53 @@ export const useAuth = () => {
     throw new Error('useAuth debe ser usado dentro de un AuthProvider');
   }
   return context;
+};
+
+interface AuthProviderProps {
+  children: ReactNode;
+}
+
+export const AuthProvider = ({ children }: AuthProviderProps) => {
+  const [user, setUser] = useState<User | null>(null);
+  const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(!!token);
+
+  // Efecto para verificar el token cuando la app carga o el token cambia
+  useEffect(() => {
+    if (token) {
+      try {
+        const decodedUser = jwtDecode<User>(token);
+        setUser(decodedUser);
+        setIsAuthenticated(true);
+      } catch (error) {
+        console.error('Token inválido o expirado, cerrando sesión.', error);
+        logout();
+      }
+    } else {
+      // Si no hay token, asegúrate de que el estado esté limpio
+      logout();
+    }
+  }, [token]);
+
+  const login = (newToken: string) => {
+    localStorage.setItem('token', newToken);
+    setToken(newToken);
+  };
+
+  const logout = () => {
+    localStorage.removeItem('token');
+    setToken(null);
+    setUser(null);
+    setIsAuthenticated(false);
+  };
+
+  const value = {
+    isAuthenticated,
+    user,
+    token,
+    login,
+    logout,
+  };
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

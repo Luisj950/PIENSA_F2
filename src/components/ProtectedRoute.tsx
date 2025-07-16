@@ -2,33 +2,33 @@
 
 import { useAuth } from '../context/AuthContext';
 import { Navigate, Outlet } from 'react-router-dom';
-import type { Rol } from '../auth/enums/rol.enum'; 
+
+// Asumimos que tienes un enum o tipo para Rol, si no, puedes usar string
+// import type { Rol } from '../auth/enums/rol.enum'; 
+type Rol = 'propietario' | 'admin' | 'veterinario';
 
 interface ProtectedRouteProps {
   roles: Rol[];
 }
 
 export const ProtectedRoute = ({ roles }: ProtectedRouteProps) => {
-  // --- CORRECCIÓN PRINCIPAL ---
-  // Obtenemos solo 'user'. La variable 'isAuthenticated' es redundante.
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
 
-  // 1. Comprobamos DIRECTAMENTE si el objeto 'user' existe.
-  // Si es 'null' (lo que significa que el usuario no está autenticado),
-  // lo redirigimos a la página de login.
-  if (!user) {
+  // 1. Primero, revisa si está autenticado. Esto es más rápido que revisar el user.
+  if (!isAuthenticated) {
     return <Navigate to="/login" />;
   }
+  
+  // 2. Si está autenticado pero el user aún no carga, puedes mostrar un loader.
+  if (!user) {
+    return <div>Cargando...</div>; 
+  }
 
-  // Si el código continúa después de este bloque, TypeScript ya sabe
-  // con total certeza que 'user' NO es null, por lo que podemos
-  // acceder a 'user.rol' de forma segura en las siguientes líneas.
-
-  // 2. Ahora que sabemos que 'user' existe, comprobamos los roles.
+  // 3. Ahora que sabemos que 'user' existe, comprobamos los roles.
   if (!roles.includes(user.rol as Rol)) {
     return <Navigate to="/unauthorized" />; 
   }
 
-  // 3. Si el usuario existe y tiene el rol correcto, renderizamos la página.
+  // 4. Si todo está bien, renderizamos la página solicitada.
   return <Outlet />;
 };

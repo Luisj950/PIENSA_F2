@@ -2,58 +2,47 @@
 
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import './Navbar.css';
 
 const Navbar = () => {
-  const { user, logout } = useAuth();
+  const { isAuthenticated, user, logout } = useAuth();
   const navigate = useNavigate();
 
-  // --- CORRECCIÓN AQUÍ ---
   const handleLogout = () => {
-    // 1. Llama a la función logout del contexto para borrar los datos de la sesión.
     logout();
-    // 2. Usa navigate para redirigir al usuario a la página de login.
     navigate('/login');
   };
 
   return (
     <nav className="navbar">
-      <div className="navbar-brand">
-        <Link to="/">Piensa Veterinaria</Link>
-      </div>
-
+      <Link to="/" className="navbar-brand">
+        Piensa Veterinaria
+      </Link>
+      
       <div className="navbar-links">
-        {user ? (
+        {isAuthenticated ? (
+          // --- ENLACES PARA USUARIOS AUTENTICADOS ---
           <>
-            {/* Enlaces condicionales por rol */}
             <Link to="/mis-mascotas">Mis Mascotas</Link>
             <Link to="/profile">Perfil</Link>
-
-            {user.rol === 'admin' && (
+            
+            {/* 👇 Se añade el nuevo enlace a la página de Contactos */}
+            <Link to="/contactos">Contactos</Link>
+            
+            {user?.rol === 'admin' && (
               <Link to="/admin-dashboard">Panel Admin</Link>
             )}
 
-            {user.rol === 'veterinario' && (
-              <Link to="/gestion-citas">Gestionar Citas</Link>
-            )}
+            <div className="navbar-user">
+              <span>{user?.email} ({user?.rol})</span>
+              <button onClick={handleLogout} className="logout-button-nav">Cerrar Sesión</button>
+            </div>
           </>
         ) : (
+          // --- ENLACES PARA USUARIOS NO AUTENTICADOS ---
           <>
-            {/* Enlaces para usuarios no autenticados */}
-            <Link to="/login">Iniciar Sesión</Link>
-            <Link to="/register">Registrarse</Link>
-          </>
-        )}
-      </div>
-
-      <div className="navbar-user-info">
-        {user && (
-          <>
-            <span>
-              {user.email} (<strong>{user.rol}</strong>)
-            </span>
-            <button onClick={handleLogout} className="logout-button">
-              Cerrar Sesión
-            </button>
+            <Link to="/login">Login</Link>
+            <Link to="/register">Registro</Link>
           </>
         )}
       </div>

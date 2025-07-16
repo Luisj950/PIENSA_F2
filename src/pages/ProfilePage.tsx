@@ -1,67 +1,28 @@
-import { useEffect, useState } from 'react';
-import apiClient from '../api/apiClient';
-import { useAuth } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
-import './ProfilePage.css'; // Importamos el nuevo archivo de estilos
+// src/pages/ProfilePage.tsx
 
-interface UserProfile {
-  sub: number;
-  email: string;
-  rol: string;
-  nombres?: string;
-  apellidos?: string;
-}
+
+import { useAuth } from '../context/AuthContext';
+import './ProfilePage.css'; // Asegúrate de tener este archivo de estilos
 
 const ProfilePage = () => {
-  const { logout } = useAuth();
-  const navigate = useNavigate();
-  const [profile, setProfile] = useState<UserProfile | null>(null);
-  const [error, setError] = useState('');
+  const { user } = useAuth();
 
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const response = await apiClient.get('/auth/profile');
-        setProfile(response.data);
-      } catch (err) {
-        setError('No se pudo cargar el perfil.');
-      }
-    };
-    fetchProfile();
-  }, []);
+  // Si el usuario aún no se ha cargado desde el contexto, muestra un mensaje.
+  if (!user) {
+    return <div>Cargando perfil...</div>;
+  }
 
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
-  };
-
-  // Función para obtener las iniciales del usuario para el avatar
-  const getInitials = () => {
-    if (!profile) return '';
-    const firstInitial = profile.nombres ? profile.nombres[0] : '';
-    const lastInitial = profile.apellidos ? profile.apellidos[0] : '';
-    return `${firstInitial}${lastInitial}`.toUpperCase();
-  };
-
-  if (error) return <div className="page-container"><p className="error-message">{error}</p></div>;
-  if (!profile) return <div className="page-container"><p>Cargando perfil...</p></div>;
+  // Obtiene la inicial del nombre para el avatar de forma segura
+  const inicial = user.nombres ? user.nombres[0].toUpperCase() : '?';
 
   return (
-    <div className="page-container">
+    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', paddingTop: '50px' }}>
       <div className="profile-card">
-        <div className="profile-avatar">{getInitials()}</div>
-        
-        <h2 className="profile-name">
-          {profile.nombres || ''} {profile.apellidos || ''}
-        </h2>
-
-        <p className="profile-email">{profile.email}</p>
-
-        <div className="profile-role">{profile.rol}</div>
-
-        <div className="profile-details">
-          <strong>ID de Usuario:</strong> {profile.sub}
-        </div>
+        <div className="profile-avatar">{inicial}</div>
+        <h2>{user.nombres} {user.apellidos}</h2>
+        <p><strong>Email:</strong> {user.email}</p>
+        <p><strong>Rol:</strong> {user.rol}</p>
+        {user.telefono && <p><strong>Teléfono:</strong> {user.telefono}</p>}
       </div>
     </div>
   );
