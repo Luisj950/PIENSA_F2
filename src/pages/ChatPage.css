@@ -1,70 +1,128 @@
+/* src/pages/ChatPage.css */
+
+/* Contenedor principal del chat */
 .chat-container {
   display: flex;
   flex-direction: column;
   height: 80vh;
-  max-width: 800px;
-  margin: auto;
-  border: 1px solid #ccc;
-  border-radius: 8px;
+  max-width: 700px;
+  margin: 2rem auto;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   overflow: hidden;
+  background-color: #f9f9f9;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+/* Encabezado del chat */
+.chat-header {
+  padding: 1rem;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-align: center;
+  color: #333;
+}
+
+/* Lista de mensajes */
 .messages-list {
   flex-grow: 1;
-  padding: 20px;
+  padding: 1rem;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 0.75rem;
 }
 
+/* Estilo general para cada item de mensaje */
 .message-item {
-  padding: 10px 15px;
+  display: flex;
+  flex-direction: column;
+  max-width: 75%;
+}
+
+/* Contenido de la burbuja del mensaje */
+.message-content {
+  padding: 0.75rem 1rem;
   border-radius: 18px;
-  max-width: 70%;
+  line-height: 1.4;
   word-wrap: break-word;
 }
 
-.message-sender {
-  font-size: 0.8em;
-  font-weight: bold;
-  margin-bottom: 4px;
-  color: #555;
+/* Mensajes enviados */
+.message-item.sent {
+  align-self: flex-end;
+  align-items: flex-end;
 }
 
-.message-item.sent {
-  background-color: #3498db;
+.message-item.sent .message-content {
+  background-color: #28a745; /* Un verde más llamativo */
   color: white;
-  align-self: flex-end;
   border-bottom-right-radius: 4px;
 }
 
+/* Mensajes recibidos */
 .message-item.received {
-  background-color: #f1f0f0;
-  color: #333;
   align-self: flex-start;
+  align-items: flex-start;
+}
+
+.message-item.received .message-content {
+  background-color: #f8f9fa; /* Un blanco roto */
+  color: #333;
+  border: 1px solid #e0e0e0; /* Añadimos un borde sutil */
   border-bottom-left-radius: 4px;
 }
 
+/* Nombre del emisor */
+.message-sender {
+  font-size: 0.8rem;
+  color: #6c757d; /* Un gris un poco más oscuro */
+  margin-bottom: 0.25rem;
+  margin-left: 0.5rem;
+}
+
+/* Formulario para enviar mensajes */
 .message-form {
   display: flex;
-  padding: 10px;
-  border-top: 1px solid #ccc;
+  padding: 1rem;
+  border-top: 1px solid #e0e0e0;
+  background-color: #ffffff;
+  align-items: center; /* Alinea verticalmente el input y el botón */
 }
 
+/* Campo de texto */
 .message-input {
   flex-grow: 1;
-  padding: 10px;
-  border: 1px solid #ddd;
+  border: 1px solid #ccc;
   border-radius: 20px;
-  margin-right: 10px;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  margin-right: 1rem; /* Aumentamos un poco el margen */
+  outline: none;
+  transition: border-color 0.2s;
 }
 
+.message-input:focus {
+  border-color: #28a745; /* Coincide con el color de los mensajes enviados */
+}
+
+/* Botón de enviar */
 .send-button {
-  padding: 10px 20px;
   border: none;
-  background-color: #2ecc71;
+  background-color: #28a745; /* Mismo verde llamativo */
   color: white;
-  border-radius: 20px;
+  border-radius: 8px; /* Botón más rectangular con bordes suaves */
+  padding: 0.75rem 1.25rem; /* Más espacio para el texto */
+  font-size: 1rem;
+  font-weight: 500;
   cursor: pointer;
+  transition: background-color 0.2s;
+  letter-spacing: 0.5px; /* Un poco de espacio entre letras */
+}
+
+.send-button:hover {
+  background-color: #1e7e34; /* Un verde ligeramente más oscuro al pasar el mouse */
 }

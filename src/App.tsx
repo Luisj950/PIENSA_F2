@@ -16,10 +16,10 @@ import UnauthorizedPage from './pages/UnauthorizedPage';
 import AdminDashboardPage from './pages/AdminDashboardPage';
 import EditarMascotaPage from './pages/EditarMascotaPage';
 import ChatPage from './pages/ChatPage';
-import ContactosPage from './pages/ContactosPage'; // 👈 1. Se añade la importación
+import ContactosPage from './pages/ContactosPage';
+import DetalleMascotaPage from './pages/DetalleMascotaPage'; // 👈 1. Se importa la nueva página
 
 function App() {
-  // Se quita <BrowserRouter> de aquí porque ahora está en main.tsx
   return (
     <AuthProvider>
       <Navbar />
@@ -38,9 +38,10 @@ function App() {
             <Route path="/añadir-mascota" element={<AddPetPage />} />
             <Route path="/mascotas/editar/:id" element={<EditarMascotaPage />} />
             <Route path="/chat/:receptorId" element={<ChatPage />} />
-            
-            {/* 👇 2. Se añade la ruta para la nueva página de contactos */}
             <Route path="/contactos" element={<ContactosPage />} />
+            
+            {/* 👇 2. Se añade la nueva ruta dinámica para el detalle de la mascota */}
+            <Route path="/mascotas/:id" element={<DetalleMascotaPage />} />
           </Route>
 
           {/* Ruta SOLO para administradores */}

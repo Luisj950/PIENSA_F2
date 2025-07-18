@@ -16,28 +16,56 @@ interface Mensaje {
   fechaEnvio: string;
 }
 
+// ✅ 1. Interfaz para la información del receptor
+interface ReceptorInfo {
+  nombres: string;
+  apellidos: string;
+}
+
 const ChatPage = () => {
   const { user, token } = useAuth();
-  const { receptorId: receptorIdFromUrl } = useParams(); // Se obtiene el ID de la URL
-
-  // ✅ CAMBIO CLAVE: Se calcula el ID directamente desde la URL. No usamos useState aquí.
+  const { receptorId: receptorIdFromUrl } = useParams();
   const receptorId = receptorIdFromUrl ? Number(receptorIdFromUrl) : null;
   
   const [mensajes, setMensajes] = useState<Mensaje[]>([]);
   const [nuevoMensaje, setNuevoMensaje] = useState('');
+  
+  // ✅ 2. Nuevo estado para guardar los datos del receptor
+  const [receptorInfo, setReceptorInfo] = useState<ReceptorInfo | null>(null);
 
+  // ✅ 3. Nuevo useEffect para obtener los datos del receptor
   useEffect(() => {
-    // Si no hay usuario o un receptorId válido, no se hace nada.
+    if (!receptorId || !token) return;
+
+    const fetchReceptorData = async () => {
+      try {
+        // Se llama al endpoint para obtener un usuario por su ID
+        const response = await fetch(`http://localhost:3000/users/${receptorId}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+        if (!response.ok) {
+          throw new Error('No se pudo obtener la información del usuario.');
+        }
+        const data = await response.json();
+        setReceptorInfo(data);
+      } catch (error) {
+        console.error("Error al obtener datos del receptor:", error);
+      }
+    };
+
+    fetchReceptorData();
+  }, [receptorId, token]); // Se ejecuta cuando el ID del receptor o el token cambian
+
+  // useEffect para la lógica del socket (se mantiene igual)
+  useEffect(() => {
     if (!user || !token || !receptorId) return;
 
-    // Conecta el socket
     socket.auth = { token };
     socket.connect();
-
-    // Se une a la sala correcta
     socket.emit('unirseAChat', { receptorId });
 
-    // Escucha eventos
     socket.on('cargarHistorial', (historial: Mensaje[]) => {
       setMensajes(historial);
     });
@@ -46,13 +74,12 @@ const ChatPage = () => {
       setMensajes((mensajesAnteriores) => [...mensajesAnteriores, mensaje]);
     });
 
-    // Función de limpieza
     return () => {
       socket.off('cargarHistorial');
       socket.off('nuevoMensaje');
       socket.disconnect();
     };
-  }, [user, token, receptorId]); // El efecto depende del receptorId de la URL
+  }, [user, token, receptorId]);
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -65,22 +92,33 @@ const ChatPage = () => {
     }
   };
 
-  // Si no hay un ID de receptor en la URL, muestra un mensaje de error.
   if (!receptorId) {
     return <div>Error: URL de chat no válida. Falta el ID del receptor.</div>;
   }
 
   return (
     <div className="chat-container">
-      <div className="chat-header">Chateando con Usuario #{receptorId}</div>
+      {/* ✅ 4. Se actualiza el encabezado para mostrar el nombre */}
+      <div className="chat-header">
+        Chateando con {receptorInfo ? `${receptorInfo.nombres} ${receptorInfo.apellidos}` : `Usuario #${receptorId}`}
+      </div>
+      
       <div className="messages-list">
         {mensajes.map((msg) => (
-          <div key={msg.id} className={`message-item ${msg.emisor.id === user?.sub ? 'sent' : 'received'}`}>
-            <div className="message-sender">{msg.emisor.id === user?.sub ? 'Tú' : msg.emisor.nombres}</div>
-            <div className="message-content">{msg.mensaje}</div>
+          <div 
+            key={msg.id} 
+            className={`message-item ${msg.emisor.id === user?.sub ? 'sent' : 'received'}`}
+          >
+            {msg.emisor.id !== user?.sub && (
+              <div className="message-sender">{msg.emisor.nombres}</div>
+            )}
+            <div className="message-content">
+              {msg.mensaje}
+            </div>
           </div>
         ))}
       </div>
+
       <form onSubmit={handleSubmit} className="message-form">
         <input
           type="text"
@@ -88,8 +126,11 @@ const ChatPage = () => {
           onChange={(e) => setNuevoMensaje(e.target.value)}
           placeholder="Escribe un mensaje..."
           className="message-input"
+          autoComplete="off"
         />
-        <button type="submit" className="send-button">Enviar</button>
+        <button type="submit" className="send-button">
+          Enviar
+        </button>
       </form>
     </div>
   );

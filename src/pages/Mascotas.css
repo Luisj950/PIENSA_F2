@@ -1,0 +1,180 @@
+/* Contenedor principal de la página */
+.page-container {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* Estilo para la cabecera de la página (Título y botón) */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 1rem;
+}
+
+.page-header h2 {
+  margin: 0;
+  color: #333;
+}
+
+/* Botón principal (Añadir Mascota) */
+.add-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  text-decoration: none; /* Para que funcione bien con <Link> */
+}
+
+.add-button:hover {
+  background-color: #0056b3;
+}
+
+/* Contenedor de la grilla de tarjetas */
+.mascotas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2rem;
+}
+
+/* Estilo para las tarjetas de mascota */
+.mascota-card {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+}
+
+.mascota-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.mascota-card-imagen {
+  width: 100%;
+  height: 200px;
+  background-color: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  color: #ccc;
+}
+
+.mascota-card-imagen img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mascota-card-info {
+  padding: 1rem;
+}
+
+.mascota-card-info h3 {
+  margin: 0 0 0.5rem 0;
+  color: #222;
+}
+
+.mascota-card-info p {
+  margin: 0;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+/* Estilos para la página de detalles */
+.info-card {
+  background-color: #f9f9f9;
+  border: 1px solid #e0e0e0;
+  padding: 1.5rem;
+  border-radius: 12px;
+  margin-bottom: 2rem;
+}
+
+.info-card p {
+  margin: 0.5rem 0;
+}
+
+.atencion-card {
+  background-color: white;
+  border: 1px solid #e9e9e9;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  padding: 1.5rem;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+}
+
+.atencion-card h4 {
+  margin: 0 0 1rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #f0f0f0;
+  color: #007bff;
+}
+/* src/pages/Mascotas.css */
+
+/* ... (aquí van todos tus estilos existentes) ... */
+
+
+/* --- NUEVOS ESTILOS PARA TARJETA HORIZONTAL --- */
+
+.mascota-card-horizontal {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex; /* <-- La clave para poner elementos en fila */
+  flex-direction: row; /* <-- Dirección horizontal */
+  align-items: center; /* Centra los items verticalmente */
+}
+
+.mascota-card-horizontal:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.mascota-card-imagen-horizontal {
+  width: 120px; /* Ancho fijo para la imagen */
+  height: 120px; /* Alto fijo para la imagen */
+  flex-shrink: 0; /* Evita que la imagen se encoja */
+  background-color: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  color: #ccc;
+}
+
+.mascota-card-imagen-horizontal img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mascota-card-info-horizontal {
+  padding: 1rem;
+  flex-grow: 1; /* El texto ocupa el espacio restante */
+}
+
+.mascota-card-info-horizontal h3 {
+  margin: 0 0 0.5rem 0;
+  color: #222;
+}
+
+.mascota-card-info-horizontal p {
+  margin: 0;
+  color: #666;
+  font-size: 0.9rem;
+}

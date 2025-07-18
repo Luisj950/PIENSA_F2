@@ -1,10 +1,11 @@
+// src/pages/MisMascotasPage.tsx
+
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import apiClient from '../api/apiClient';
-// CAMBIO: La ruta ahora apunta a la carpeta 'components'
-import { MascotaCard } from '../pages/MascotaCard'; 
+import { MascotaCard } from '../components/MascotaCard'; // Importamos el nuevo componente
+import './Mascotas.css'; // Importamos los nuevos estilos
 
-// La interfaz para la mascota
 interface Mascota {
   id: number;
   nombre: string;
@@ -31,44 +32,30 @@ const MisMascotasPage = () => {
     fetchMascotas();
   }, []);
 
-  const handleMascotaEliminada = (id: number) => {
-    setMascotas(currentMascotas => currentMascotas.filter(m => m.id !== id));
-  };
-
   if (loading) {
     return <div className="page-container"><p>Cargando tus mascotas...</p></div>;
   }
 
   return (
     <div className="page-container">
-      <div className="profile-container"  style={{
-        width: '80%'
-      }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h2>Mis Mascotas</h2>
-            <Link to="/añadir-mascota">
-              <button className="submit-button">Añadir Nueva Mascota</button>
-            </Link>
-        </div>
+      <header className="page-header">
+        <h2>Mis Mascotas</h2>
+        <Link to="/añadir-mascota" className="add-button">
+          Añadir Mascota
+        </Link>
+      </header>
 
-        <div style={{
-  display: 'grid',
-  gridTemplateColumns: 'repeat(auto-fill, minmax(40%, 3fr))',
-  gridColumnEnd: 4,
-  gap: '20px',
-  marginTop: '20px'
-  
-}}>
-  {mascotas.map((mascota) => (
-    <MascotaCard
-      key={mascota.id}
-      mascota={mascota}
-      onMascotaEliminada={handleMascotaEliminada} 
-    />
-  ))}
-</div>
-         
-      </div>
+      {mascotas.length > 0 ? (
+        <div className="mascotas-grid">
+          {mascotas.map((mascota) => (
+            <Link key={mascota.id} to={`/mascotas/${mascota.id}`} style={{ textDecoration: 'none' }}>
+              <MascotaCard mascota={mascota} />
+            </Link>
+          ))}
+        </div>
+      ) : (
+        <p>Aún no has registrado ninguna mascota. ¡Añade una para empezar!</p>
+      )}
     </div>
   );
 };
