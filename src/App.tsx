@@ -17,7 +17,8 @@ import AdminDashboardPage from './pages/AdminDashboardPage';
 import EditarMascotaPage from './pages/EditarMascotaPage';
 import ChatPage from './pages/ChatPage';
 import ContactosPage from './pages/ContactosPage';
-import DetalleMascotaPage from './pages/DetalleMascotaPage'; // 👈 1. Se importa la nueva página
+import DetalleMascotaPage from './pages/DetalleMascotaPage';
+import AgendaPage from './pages/AgendaPage'; // ✅ 1. Se importa la nueva página
 
 function App() {
   return (
@@ -39,9 +40,10 @@ function App() {
             <Route path="/mascotas/editar/:id" element={<EditarMascotaPage />} />
             <Route path="/chat/:receptorId" element={<ChatPage />} />
             <Route path="/contactos" element={<ContactosPage />} />
-            
-            {/* 👇 2. Se añade la nueva ruta dinámica para el detalle de la mascota */}
             <Route path="/mascotas/:id" element={<DetalleMascotaPage />} />
+            
+            {/* ✅ 2. Se añade la nueva ruta para la agenda */}
+            <Route path="/agenda" element={<AgendaPage />} />
           </Route>
 
           {/* Ruta SOLO para administradores */}

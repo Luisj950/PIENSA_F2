@@ -3,15 +3,15 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import apiClient from '../api/apiClient';
-import { MascotaCard } from '../components/MascotaCard'; // Importamos el nuevo componente
-import './Mascotas.css'; // Importamos los nuevos estilos
+import { MascotaCard } from '../components/MascotaCard';
+import './Mascotas.css';
 
 interface Mascota {
   id: number;
   nombre: string;
   especie?: string;
   raza?: string;
-  imagenUrl?: string;
+  imagenUrls?: string[]; // Asegúrate de que coincida con MascotaCard
 }
 
 const MisMascotasPage = () => {
@@ -32,6 +32,11 @@ const MisMascotasPage = () => {
     fetchMascotas();
   }, []);
 
+  // 3. FUNCIÓN PARA ACTUALIZAR LA LISTA CUANDO SE ELIMINA UNA MASCOTA
+  const handleMascotaEliminada = (id: number) => {
+    setMascotas(mascotasActuales => mascotasActuales.filter(m => m.id !== id));
+  };
+
   if (loading) {
     return <div className="page-container"><p>Cargando tus mascotas...</p></div>;
   }
@@ -48,9 +53,12 @@ const MisMascotasPage = () => {
       {mascotas.length > 0 ? (
         <div className="mascotas-grid">
           {mascotas.map((mascota) => (
-            <Link key={mascota.id} to={`/mascotas/${mascota.id}`} style={{ textDecoration: 'none' }}>
-              <MascotaCard mascota={mascota} />
-            </Link>
+            // Se quita el <Link> que envolvía toda la tarjeta
+            <MascotaCard 
+              key={mascota.id} 
+              mascota={mascota} 
+              onMascotaEliminada={handleMascotaEliminada} // Se pasa la función como prop
+            />
           ))}
         </div>
       ) : (

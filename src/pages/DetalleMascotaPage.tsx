@@ -1,17 +1,25 @@
 // src/pages/DetalleMascotaPage.tsx
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import apiClient from '../api/apiClient';
-import './Mascotas.css'; // Importamos los nuevos estilos
+import { useAuth } from '../context/AuthContext'; // Se importa para saber el rol del usuario
+import { ModalCrearAtencion } from '../components/ModalCrearAtencion'; // Se importa el nuevo modal
+import './Mascotas.css';
 
-// --- Interfaces para la estructura de datos ---
+// --- Interfaces actualizadas con los datos del backend ---
 interface AtencionMedica {
   id: number;
-  fecha: string;
-  motivoConsulta: string;
+  fechaAtencion: string;
+  categoria: string;
+  anamnesis: string;
   diagnostico: string;
-  tratamientoPrescrito?: string;
+  tratamiento: string;
+  observaciones?: string;
+  veterinario: {
+    nombres: string;
+    apellidos: string;
+  };
 }
 
 interface HistoriaClinica {
@@ -25,31 +33,46 @@ interface MascotaDetalle {
   especie: string;
   raza: string;
   fechaNacimiento: string;
-  historiaClinica: HistoriaClinica | null;
+  // La historia clínica ahora viene de su propio endpoint
 }
 
 const DetalleMascotaPage = () => {
   const { id } = useParams<{ id: string }>();
+  const { user } = useAuth(); // Se obtiene el usuario para verificar su rol
   const [mascota, setMascota] = useState<MascotaDetalle | null>(null);
+  const [historia, setHistoria] = useState<HistoriaClinica | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [modalAbierto, setModalAbierto] = useState(false);
 
-  useEffect(() => {
+  // Usamos useCallback para evitar que la función se recree innecesariamente
+  const fetchDatos = useCallback(async () => {
     if (!id) return;
-    const fetchDetalleMascota = async () => {
-      try {
-        setLoading(true);
-        const response = await apiClient.get(`/mascotas/${id}`);
-        setMascota(response.data);
-      } catch (err) {
+    try {
+      setLoading(true);
+      // Hacemos las dos llamadas a la API en paralelo para más eficiencia
+      const [resMascota, resHistoria] = await Promise.all([
+        apiClient.get(`/mascotas/${id}`),
+        apiClient.get(`/historias-clinicas/mascota/${id}`)
+      ]);
+      setMascota(resMascota.data);
+      setHistoria(resHistoria.data);
+    } catch (err: any) {
+      // Si no hay historia clínica, no lo tratamos como un error fatal
+      if (err.response?.status === 404) {
+        setHistoria(null); // La mascota existe pero no tiene historial
+      } else {
         setError('No se pudo cargar la información de la mascota.');
         console.error(err);
-      } finally {
-        setLoading(false);
       }
-    };
-    fetchDetalleMascota();
+    } finally {
+      setLoading(false);
+    }
   }, [id]);
+
+  useEffect(() => {
+    fetchDatos();
+  }, [fetchDatos]);
 
   if (loading) return <div className="page-container"><p>Cargando detalles...</p></div>;
   if (error) return <div className="page-container"><p style={{ color: 'red' }}>{error}</p></div>;
@@ -59,6 +82,12 @@ const DetalleMascotaPage = () => {
     <div className="page-container">
       <header className="page-header">
         <h2>{mascota.nombre}</h2>
+        {/* El botón solo se muestra si el usuario es veterinario o admin */}
+        {(user?.rol === 'veterinario' || user?.rol === 'admin') && (
+          <button onClick={() => setModalAbierto(true)} className="add-button">
+            Añadir Atención
+          </button>
+        )}
       </header>
       
       <div className="info-card">
@@ -69,19 +98,34 @@ const DetalleMascotaPage = () => {
       </div>
 
       <h3>Historia Clínica</h3>
-      {mascota.historiaClinica && mascota.historiaClinica.atenciones.length > 0 ? (
+      {historia && historia.atenciones.length > 0 ? (
         <div className="atenciones-container">
-          {mascota.historiaClinica.atenciones.map(atencion => (
+          {historia.atenciones.map(atencion => (
             <div key={atencion.id} className="atencion-card">
-              <h4>Atención del {new Date(atencion.fecha).toLocaleDateString()}</h4>
-              <p><strong>Motivo:</strong> {atencion.motivoConsulta}</p>
+              <h4>{atencion.categoria.replace(/_/g, ' ')} - {new Date(atencion.fechaAtencion).toLocaleDateString()}</h4>
+              <p><strong>Veterinario:</strong> {atencion.veterinario.nombres} {atencion.veterinario.apellidos}</p>
+              <p><strong>Motivo:</strong> {atencion.anamnesis}</p>
               <p><strong>Diagnóstico:</strong> {atencion.diagnostico}</p>
-              {atencion.tratamientoPrescrito && <p><strong>Tratamiento:</strong> {atencion.tratamientoPrescrito}</p>}
+              {atencion.tratamiento && <p><strong>Tratamiento:</strong> {atencion.tratamiento}</p>}
+              {atencion.observaciones && <p><strong>Observaciones:</strong> {atencion.observaciones}</p>}
             </div>
           ))}
         </div>
       ) : (
         <p>No hay atenciones médicas registradas.</p>
+      )}
+
+      {/* Renderizamos el modal */}
+      {id && (
+        <ModalCrearAtencion
+          isOpen={modalAbierto}
+          onRequestClose={() => setModalAbierto(false)}
+          mascotaId={Number(id)}
+          onAtencionCreada={() => {
+            setModalAbierto(false);
+            fetchDatos(); // Vuelve a cargar los datos para mostrar el nuevo registro
+          }}
+        />
       )}
     </div>
   );

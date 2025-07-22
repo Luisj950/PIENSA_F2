@@ -24,10 +24,12 @@ const Navbar = () => {
           // --- ENLACES PARA USUARIOS AUTENTICADOS ---
           <>
             <Link to="/mis-mascotas">Mis Mascotas</Link>
-            <Link to="/profile">Perfil</Link>
             
-            {/* 👇 Se añade el nuevo enlace a la página de Contactos */}
+            {/* ✅ ENLACE AÑADIDO */}
+            <Link to="/agenda">Agenda</Link>
+
             <Link to="/contactos">Contactos</Link>
+            <Link to="/profile">Perfil</Link>
             
             {user?.rol === 'admin' && (
               <Link to="/admin-dashboard">Panel Admin</Link>

@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
-// Interfaz para el usuario de la lista
 interface UserToList {
   id: number;
   nombres: string;
@@ -27,8 +26,9 @@ const ContactosPage = () => {
 
     const fetchUsuarios = async () => {
       try {
-        // ✅ CAMBIO IMPLEMENTADO: La URL ahora apunta a la ruta genérica de contactos.
-        const response = await fetch('http://localhost:3000/users/contacts', {
+        // ✅ LA CORRECCIÓN DEFINITIVA ESTÁ AQUÍ:
+        // Se usa 127.0.0.1 en lugar de localhost para evitar el conflicto de IP.
+        const response = await fetch('http://127.0.0.1:3000/users/contacts', {
           headers: {
             'Authorization': `Bearer ${token}`,
           },
@@ -60,7 +60,7 @@ const ContactosPage = () => {
 
   return (
     <div style={{ maxWidth: '800px', margin: 'auto' }}>
-      <h1>Contactos</h1> {/* ✅ Texto actualizado */}
+      <h1>Contactos</h1>
       <ul style={{ listStyle: 'none', padding: 0 }}>
         {usuarios.length > 0 ? (
           usuarios.map((usuario) => (
@@ -76,7 +76,7 @@ const ContactosPage = () => {
             </li>
           ))
         ) : (
-          <p>No se encontraron contactos para mostrar.</p> // ✅ Texto actualizado
+          <p>No se encontraron contactos para mostrar.</p>
         )}
       </ul>
     </div>

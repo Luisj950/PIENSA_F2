@@ -1,15 +1,13 @@
-// Ruta: src/pages/EditarMascotaPage.tsx
-import { useState, useEffect } from 'react';
+// src/pages/EditarMascotaPage.tsx
+import React, { useState, useEffect } from 'react'; // ✅ 1. Se limpia la importación
 import { useParams, useNavigate } from 'react-router-dom';
 import apiClient from '../api/apiClient';
 
-// CAMBIO 1: La interfaz ahora incluye el 'id' y 'imagenUrl' que vienen de la API
 interface MascotaData {
-  id: number;
   nombre: string;
   especie?: string;
   raza?: string;
-  imagenUrl?: string;
+  imagenUrls?: string[];
 }
 
 const EditarMascotaPage = () => {
@@ -17,6 +15,8 @@ const EditarMascotaPage = () => {
   const navigate = useNavigate();
   const [mascota, setMascota] = useState<MascotaData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [nuevasImagenes, setNuevasImagenes] = useState<FileList | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchMascota = async () => {
@@ -38,30 +38,40 @@ const EditarMascotaPage = () => {
     }
   };
 
+  // ✅ 2. Se usa 'React.FormEvent' directamente
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!mascota) return;
+    setError(null);
 
-    // CAMBIO 2: Se crea un nuevo objeto sin la propiedad 'id' para enviar al backend
-    const { id: petId, ...updateData } = mascota;
+    const dataParaEnviar = new FormData();
+    dataParaEnviar.append('nombre', mascota.nombre);
+    dataParaEnviar.append('especie', mascota.especie || '');
+    dataParaEnviar.append('raza', mascota.raza || '');
+
+    if (nuevasImagenes) {
+      for (let i = 0; i < nuevasImagenes.length; i++) {
+        dataParaEnviar.append('files', nuevasImagenes[i]);
+      }
+    }
 
     try {
-      await apiClient.patch(`/mascotas/${id}`, updateData);
+      await apiClient.patch(`/mascotas/${id}`, dataParaEnviar, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
       alert('Mascota actualizada con éxito');
       navigate('/mis-mascotas');
-    } catch (error) {
-      console.error('Error al actualizar la mascota:', error);
-      alert('No se pudo actualizar la mascota.');
+    } catch (err: any) {
+      const messages = err.response?.data?.message;
+      const errorMessage = Array.isArray(messages) ? messages.join(', ') : messages;
+      setError(errorMessage || 'Error al actualizar la mascota.');
     }
   };
 
-  if (loading) {
-    return <div>Cargando...</div>;
-  }
-
-  if (!mascota) {
-    return <div>No se encontró la mascota.</div>;
-  }
+  if (loading) return <div>Cargando...</div>;
+  if (!mascota) return <div>No se encontró la mascota.</div>;
 
   return (
     <div className="page-container">
@@ -81,10 +91,18 @@ const EditarMascotaPage = () => {
             <input type="text" id="raza" name="raza" value={mascota.raza || ''} onChange={handleChange} />
           </div>
           <div className="form-group">
-            <label htmlFor="imagenUrl">URL de la Imagen</label>
-            <input type="text" id="imagenUrl" name="imagenUrl" value={mascota.imagenUrl || ''} onChange={handleChange} />
+            <label htmlFor="imagenes">Reemplazar Imágenes (opcional):</label>
+            <input 
+              id="imagenes"
+              name="imagenes"
+              type="file" 
+              multiple 
+              accept="image/*" 
+              onChange={(e) => setNuevasImagenes(e.target.files)} 
+            />
           </div>
           <button type="submit" className="submit-button">Actualizar Mascota</button>
+          {error && <p className="error-message">{error}</p>}
         </form>
       </div>
     </div>
