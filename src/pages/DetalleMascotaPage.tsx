@@ -1,10 +1,10 @@
-// src/pages/DetalleMascotaPage.tsx
+// src/pages/DetalleMascotaPage.tsx (Código completo con correcciones)
 
 import { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import apiClient from '../api/apiClient';
-import { useAuth } from '../context/AuthContext'; // Se importa para saber el rol del usuario
-import { ModalCrearAtencion } from '../components/ModalCrearAtencion'; // Se importa el nuevo modal
+import { useAuth } from '../context/AuthContext';
+import { ModalCrearAtencion } from '../components/ModalCrearAtencion';
 import './Mascotas.css';
 
 // --- Interfaces actualizadas con los datos del backend ---
@@ -33,38 +33,56 @@ interface MascotaDetalle {
   especie: string;
   raza: string;
   fechaNacimiento: string;
-  // La historia clínica ahora viene de su propio endpoint
 }
 
 const DetalleMascotaPage = () => {
   const { id } = useParams<{ id: string }>();
-  const { user } = useAuth(); // Se obtiene el usuario para verificar su rol
+  const { user } = useAuth();
   const [mascota, setMascota] = useState<MascotaDetalle | null>(null);
   const [historia, setHistoria] = useState<HistoriaClinica | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [modalAbierto, setModalAbierto] = useState(false);
 
-  // Usamos useCallback para evitar que la función se recree innecesariamente
+  // --- FUNCIÓN CORREGIDA CON PROMISE.ALLSETTLED ---
   const fetchDatos = useCallback(async () => {
     if (!id) return;
     try {
       setLoading(true);
-      // Hacemos las dos llamadas a la API en paralelo para más eficiencia
-      const [resMascota, resHistoria] = await Promise.all([
+      setError(null); // Limpiar errores previos
+
+      // Usamos Promise.allSettled para manejar los resultados individualmente
+      const [resMascota, resHistoria] = await Promise.allSettled([
         apiClient.get(`/mascotas/${id}`),
         apiClient.get(`/historias-clinicas/mascota/${id}`)
       ]);
-      setMascota(resMascota.data);
-      setHistoria(resHistoria.data);
-    } catch (err: any) {
-      // Si no hay historia clínica, no lo tratamos como un error fatal
-      if (err.response?.status === 404) {
-        setHistoria(null); // La mascota existe pero no tiene historial
+
+      // 1. Verificamos el resultado de la mascota
+      if (resMascota.status === 'fulfilled') {
+        setMascota(resMascota.value.data);
       } else {
+        // Si la mascota no se encuentra, es un error fatal y detenemos la ejecución
+        console.error("Error al buscar la mascota:", resMascota.reason);
         setError('No se pudo cargar la información de la mascota.');
-        console.error(err);
+        setMascota(null); // Aseguramos que no haya datos de mascota
+        setHistoria(null);
+        return; // Salimos de la función
       }
+      
+      // 2. Verificamos el resultado de la historia clínica
+      if (resHistoria.status === 'fulfilled') {
+        setHistoria(resHistoria.value.data);
+      } else {
+        // Si la historia clínica da 404, no es un error. Simplemente no tiene.
+        // En cualquier otro caso, lo registramos pero no rompemos la app.
+        setHistoria(null); 
+        console.warn("No se encontró historia clínica o hubo un error al buscarla:", resHistoria.reason);
+      }
+
+    } catch (err) {
+      // Este catch ahora es para errores inesperados de red, no de la API
+      setError('Ocurrió un error inesperado de conexión.');
+      console.error(err);
     } finally {
       setLoading(false);
     }

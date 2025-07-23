@@ -1,0 +1,84 @@
+/* Estilo para el fondo de la página */
+.form-page-container {
+  background-color: #f8f9fa; /* Color de fondo discreto */
+  min-height: calc(100vh - 80px); /* Ocupa toda la altura menos el navbar */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+/* El contenedor blanco del formulario */
+.form-container {
+  background-color: white;
+  padding: 2.5rem;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 500px;
+}
+
+.form-title {
+  text-align: center;
+  color: #343a40;
+  margin-top: 0;
+  margin-bottom: 2rem;
+  font-size: 1.75rem;
+  font-weight: 600;
+}
+
+/* Estilo para cada grupo de label + input */
+.form-group {
+  margin-bottom: 1.25rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #495057;
+  font-weight: 500;
+}
+
+/* Estilo para los cuadros de texto y selección */
+.form-input,
+.form-select {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid #ced4da;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-input:focus,
+.form-select:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
+}
+
+/* Estilo para el botón de envío */
+.submit-button {
+  width: 100%;
+  padding: 0.85rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  background-color: #007bff; /* Color primario azul */
+  color: white;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin-top: 1rem;
+}
+
+.submit-button:hover {
+  background-color: #0056b3; /* Un azul más oscuro al pasar el ratón */
+}
+
+/* Mensaje de error */
+.error-message {
+  color: #dc3545; /* Rojo para errores */
+  margin-top: 1rem;
+  text-align: center;
+}

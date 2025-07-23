@@ -1,83 +1,42 @@
-/* src/pages/Mascotas.css */
+/* ... (todos tus estilos existentes van aquí arriba) ... */
 
-/* --- ESTILOS GENERALES DE LA PÁGINA --- */
-.page-container {
-  max-width: 900px;
-  margin: 2rem auto;
-  padding: 0 1rem;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-}
 
-.page-header {
+/* --- NUEVOS ESTILOS PARA BOTONES DENTRO DE LA TARJETA --- */
+.mascota-card-actions {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
-  border-bottom: 1px solid #e0e0e0;
-  padding-bottom: 1rem;
+  gap: 0.5rem; /* Espacio entre botones */
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color);
 }
 
-.page-header h2 {
-  margin: 0;
-  color: #333;
-}
-
-.add-button {
-  background-color: #007bff;
-  color: white;
+.card-button {
+  flex-grow: 1; /* Hace que los botones ocupen el mismo espacio */
+  text-align: center;
   border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 8px;
-  font-size: 1rem;
+  padding: 0.5rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.2s ease;
   text-decoration: none;
+  transition: all 0.2s ease;
 }
 
-.add-button:hover {
-  background-color: #0056b3;
+/* Botón de Editar (Color secundario) */
+.card-button.edit {
+  background-color: #6c757d;
+  color: white;
+}
+.card-button.edit:hover {
+  background-color: #5a6268;
 }
 
-
-/* --- ESTILOS PARA LA LISTA DE MASCOTAS (MisMascotasPage) --- */
-.mascotas-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 2rem;
+/* Botón de Eliminar (Color de peligro) */
+.card-button.delete {
+  background-color: #dc3545;
+  color: white;
 }
-
-
-/* --- ESTILOS PARA LA PÁGINA DE DETALLES (DetalleMascotaPage) --- */
-.info-card {
-  background-color: #f8f9fa;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  padding: 1.5rem;
-  margin-bottom: 2rem;
-}
-
-.atenciones-container {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.atencion-card {
-  background-color: #ffffff;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  padding: 1.5rem;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-}
-
-.atencion-card h4 {
-  margin: 0 0 1rem 0;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid #f0f0f0;
-  color: #007bff;
-}
-
-.atencion-card p {
-  margin: 0.5rem 0;
-  line-height: 1.6;
+.card-button.delete:hover {
+  background-color: #c82333;
 }

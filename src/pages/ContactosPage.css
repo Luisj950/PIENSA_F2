@@ -1,0 +1,73 @@
+/* Contenedor principal de la página */
+.page-container {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Cabecera de la página */
+.page-header {
+  color: #343a40;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #dee2e6;
+}
+
+/* Lista de contactos */
+.contact-list {
+  list-style: none;
+  padding: 0;
+}
+
+/* Cada item/tarjeta de la lista de contactos */
+.contact-item {
+  background-color: #ffffff;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 1rem 1.5rem;
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: box-shadow 0.2s ease-in-out, transform 0.2s ease-in-out;
+}
+
+.contact-item:hover {
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  transform: translateY(-3px);
+}
+
+/* Información del contacto (nombre y rol) */
+.contact-info strong {
+  font-size: 1.1rem;
+  color: #212529;
+}
+
+.contact-info small {
+  color: #6c757d;
+}
+
+/* Botón para chatear */
+.chat-button {
+  text-decoration: none;
+  background-color: #007bff;
+  color: white;
+  padding: 0.5rem 1.25rem;
+  border-radius: 5px;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.chat-button:hover {
+  background-color: #0056b3;
+}
+
+/* Mensaje para cuando no hay contactos */
+.no-contacts-message {
+  text-align: center;
+  color: #6c757d;
+  padding: 2rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}

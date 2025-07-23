@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import './ContactosPage.css'; // 👈 Se importa el nuevo archivo de estilos
 
 interface UserToList {
   id: number;
@@ -26,8 +27,6 @@ const ContactosPage = () => {
 
     const fetchUsuarios = async () => {
       try {
-        // ✅ LA CORRECCIÓN DEFINITIVA ESTÁ AQUÍ:
-        // Se usa 127.0.0.1 en lugar de localhost para evitar el conflicto de IP.
         const response = await fetch('http://127.0.0.1:3000/users/contacts', {
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -51,32 +50,32 @@ const ContactosPage = () => {
   }, [token]);
 
   if (loading) {
-    return <div>Cargando contactos...</div>;
+    return <div className="page-container">Cargando contactos...</div>;
   }
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return <div className="page-container">Error: {error}</div>;
   }
 
   return (
-    <div style={{ maxWidth: '800px', margin: 'auto' }}>
-      <h1>Contactos</h1>
-      <ul style={{ listStyle: 'none', padding: 0 }}>
+    <div className="page-container">
+      <h1 className="page-header">Contactos</h1>
+      <ul className="contact-list">
         {usuarios.length > 0 ? (
           usuarios.map((usuario) => (
-            <li key={usuario.id} style={{ border: '1px solid #eee', borderRadius: '8px', padding: '1rem', marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div>
+            <li key={usuario.id} className="contact-item">
+              <div className="contact-info">
                 <strong>{usuario.nombres} {usuario.apellidos}</strong>
                 <br />
                 <small>Rol: {usuario.rol}</small>
               </div>
-              <Link to={`/chat/${usuario.id}`} style={{ textDecoration: 'none', backgroundColor: '#007bff', color: 'white', padding: '0.5rem 1rem', borderRadius: '5px' }}>
+              <Link to={`/chat/${usuario.id}`} className="chat-button">
                 Chatear
               </Link>
             </li>
           ))
         ) : (
-          <p>No se encontraron contactos para mostrar.</p>
+          <p className="no-contacts-message">No se encontraron contactos para mostrar.</p>
         )}
       </ul>
     </div>
