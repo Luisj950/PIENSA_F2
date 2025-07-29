@@ -3,6 +3,7 @@
 import React, { useState, type FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import apiClient from '../api/apiClient';
+import './Formulario.css'; // 💅 1. Importa el nuevo archivo CSS
 
 const AddPetPage = () => {
   const [formData, setFormData] = useState({
@@ -14,9 +15,7 @@ const AddPetPage = () => {
     color: '',
   });
   
-  // ✅ 1. Añadimos un estado para los archivos de imagen
   const [imagenes, setImagenes] = useState<FileList | null>(null);
-
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
@@ -24,37 +23,27 @@ const AddPetPage = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
   
-  // ✅ 2. La función de envío ahora usa FormData para poder incluir los archivos
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
 
     const dataParaEnviar = new FormData();
 
-    // Agregamos todos los campos de texto al FormData
-    dataParaEnviar.append('nombre', formData.nombre);
-    dataParaEnviar.append('especie', formData.especie);
-    dataParaEnviar.append('raza', formData.raza);
-    dataParaEnviar.append('fechaNacimiento', formData.fechaNacimiento);
-    dataParaEnviar.append('sexo', formData.sexo);
-    dataParaEnviar.append('color', formData.color);
+    // Agregamos todos los campos
+    Object.entries(formData).forEach(([key, value]) => {
+      dataParaEnviar.append(key, value);
+    });
 
-    // Agregamos los archivos de imagen si el usuario seleccionó alguno
+    // Agregamos los archivos de imagen
     if (imagenes) {
       for (let i = 0; i < imagenes.length; i++) {
-        // El nombre 'files' debe coincidir con el que espera el interceptor en NestJS
         dataParaEnviar.append('files', imagenes[i]);
       }
     }
 
     try {
-      // Enviamos el FormData
       await apiClient.post('/mascotas', dataParaEnviar, {
-        headers: {
-          // El navegador ajustará el Content-Type automáticamente a multipart/form-data
-          // al enviar un objeto FormData, pero a veces es bueno ser explícito.
-          'Content-Type': 'multipart/form-data',
-        },
+        headers: { 'Content-Type': 'multipart/form-data' },
       });
       alert('¡Mascota registrada con éxito!');
       navigate('/mis-mascotas');
@@ -100,17 +89,28 @@ const AddPetPage = () => {
             <input id="color" name="color" type="text" onChange={handleChange} />
           </div>
 
-          {/* ✅ 3. Añadimos el campo para seleccionar las imágenes en el formulario */}
+          {/* ✅ 2. Estructura mejorada para el input de archivos */}
           <div className="form-group">
             <label htmlFor="imagenes">Imágenes (puedes seleccionar varias):</label>
+            <label htmlFor="imagenes" className="file-input-label">
+              Seleccionar archivos...
+            </label>
             <input 
               id="imagenes"
               name="imagenes"
               type="file" 
               multiple 
               accept="image/*" 
-              onChange={(e) => setImagenes(e.target.files)} 
+              onChange={(e) => setImagenes(e.target.files)}
+              className="file-input-hidden" // Ocultamos el input original
             />
+            {/* ✅ 3. Mostramos los nombres de los archivos seleccionados */}
+            <div className="file-names-display">
+              {imagenes && imagenes.length > 0
+                ? Array.from(imagenes).map(file => file.name).join(', ')
+                : 'No se han seleccionado archivos.'
+              }
+            </div>
           </div>
 
           <button type="submit" className="submit-button">Guardar Mascota</button>

@@ -1,11 +1,11 @@
-// src/pages/DetalleMascotaPage.tsx (Código completo con correcciones)
+// src/pages/DetalleMascotaPage.tsx
 
 import { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import apiClient from '../api/apiClient';
 import { useAuth } from '../context/AuthContext';
 import { ModalCrearAtencion } from '../components/ModalCrearAtencion';
-import './Mascotas.css';
+import './DetalleMascotaPage.css'; // ✅ Se importa el CSS correcto
 
 // --- Interfaces actualizadas con los datos del backend ---
 interface AtencionMedica {
@@ -97,7 +97,8 @@ const DetalleMascotaPage = () => {
   if (!mascota) return <div className="page-container"><p>No se encontró la mascota.</p></div>;
 
   return (
-    <div className="page-container">
+    // Reemplazamos page-container por una clase más específica para esta página
+    <div className="detalle-container">
       <header className="page-header">
         <h2>{mascota.nombre}</h2>
         {/* El botón solo se muestra si el usuario es veterinario o admin */}

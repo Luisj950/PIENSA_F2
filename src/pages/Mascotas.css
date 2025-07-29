@@ -1,42 +1,43 @@
-/* ... (todos tus estilos existentes van aquí arriba) ... */
+/* src/pages/Mascotas.css */
 
+.mascotas-page {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
 
-/* --- NUEVOS ESTILOS PARA BOTONES DENTRO DE LA TARJETA --- */
-.mascota-card-actions {
+.mascotas-header {
   display: flex;
-  gap: 0.5rem; /* Espacio entre botones */
-  margin-top: 1rem;
-  padding-top: 1rem;
-  border-top: 1px solid var(--border-color);
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  border-bottom: 2px solid var(--border-color);
+  padding-bottom: 1rem;
 }
 
-.card-button {
-  flex-grow: 1; /* Hace que los botones ocupen el mismo espacio */
-  text-align: center;
-  border: none;
-  padding: 0.5rem;
-  border-radius: 6px;
-  font-size: 0.9rem;
-  font-weight: 500;
-  cursor: pointer;
+.mascotas-header h1 {
+  font-size: 2.5rem;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.add-mascota-link {
+  padding: 0.75rem 1.5rem;
+  background-color: var(--color-primary);
+  color: white;
   text-decoration: none;
-  transition: all 0.2s ease;
+  border-radius: var(--border-radius);
+  font-weight: 600;
+  transition: background-color 0.2s;
 }
 
-/* Botón de Editar (Color secundario) */
-.card-button.edit {
-  background-color: #6c757d;
-  color: white;
-}
-.card-button.edit:hover {
-  background-color: #5a6268;
+.add-mascota-link:hover {
+  background-color: var(--color-primary-hover);
 }
 
-/* Botón de Eliminar (Color de peligro) */
-.card-button.delete {
-  background-color: #dc3545;
-  color: white;
-}
-.card-button.delete:hover {
-  background-color: #c82333;
+.mascotas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2rem;
 }

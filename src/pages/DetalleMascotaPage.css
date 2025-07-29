@@ -1,67 +1,112 @@
 /* src/pages/DetalleMascotaPage.css */
 
+/* Contenedor principal de la página de detalles */
+.detalle-container {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+/* Cabecera con el nombre y el botón */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.page-header h2 {
+  font-size: 2.5rem;
+  color: var(--color-text);
+  margin: 0;
+}
+
+/* El botón usa la clase .add-button pero lo estilizamos aquí */
+.add-button {
+  padding: 0.75rem 1.5rem;
+  background-color: var(--color-primary);
+  color: white;
+  text-decoration: none;
+  border-radius: var(--border-radius);
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.add-button:hover {
+  background-color: var(--color-primary-hover);
+}
+
+/* Tarjeta de información general */
+.info-card {
+  background-color: var(--color-surface);
+  padding: 2rem;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  margin-bottom: 2.5rem;
+}
+
+.info-card h3 {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.75rem;
+}
+
+.info-card p {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.1rem;
+  color: var(--color-text-secondary);
+}
+
+.info-card p strong {
+  color: var(--color-text);
+}
+
+/* Título de la sección de Historia Clínica */
+.detalle-container > h3 {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Contenedor de las tarjetas de atención */
 .atenciones-container {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
 }
 
+/* Tarjeta para cada atención médica */
 .atencion-card {
-  background-color: #ffffff;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
+  background-color: var(--color-surface);
   padding: 1.5rem;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  border-radius: var(--border-radius);
+  border-left: 5px solid var(--color-primary);
+  box-shadow: var(--box-shadow);
 }
 
 .atencion-card h4 {
-  margin: 0 0 0.5rem 0;
-  color: #0056b3;
-  border-bottom: 2px solid #f0f0f0;
-  padding-bottom: 0.5rem;
+  margin-top: 0;
   margin-bottom: 1rem;
+  font-size: 1.2rem;
+  text-transform: capitalize;
 }
 
 .atencion-card p {
-  margin: 0.5rem 0;
+  margin: 0 0 0.75rem 0;
   line-height: 1.6;
+  color: var(--color-text-secondary);
 }
 
-.vet-info {
-  font-style: italic;
-  font-size: 0.9rem;
-  color: #555;
-  margin-bottom: 1rem;
+.atencion-card p:last-child {
+  margin-bottom: 0;
 }
 
-/* Reutilizamos estilos de otras páginas para consistencia */
-.page-container {
-  max-width: 900px;
-  margin: auto;
-  padding: 1rem;
-}
-
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
-}
-
-.add-button {
-  background-color: #28a745;
-  color: white;
-  border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 1rem;
-}
-
-.info-card {
-  background-color: #f8f9fa;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  padding: 1.5rem;
-  margin-bottom: 2rem;
+.atencion-card p strong {
+  color: var(--color-text);
 }

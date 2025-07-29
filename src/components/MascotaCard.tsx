@@ -2,8 +2,9 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import './MascotaCard.css'; // Asegúrate de que este archivo CSS exista en la misma carpeta o la ruta sea correcta
-import defaultPetImage from '../assets/default-pet-image.jpg'; // Asegúrate de tener una imagen por defecto aquí
+import apiClient from '../api/apiClient';
+import './MascotaCard.css';
+import defaultPetImage from '../assets/default-pet-image.jpg';
 
 interface Mascota {
   id: number;
@@ -18,42 +19,36 @@ interface MascotaCardProps {
   onMascotaEliminada: (id: number) => void;
 }
 
-const API_URL = 'http://localhost:3000';
-
 export const MascotaCard: React.FC<MascotaCardProps> = ({ mascota, onMascotaEliminada }) => {
-  const imageUrl = mascota.imagenUrls && mascota.imagenUrls.length > 0
-    ? `${API_URL}${mascota.imagenUrls[0]}`
-    : defaultPetImage;
-
-  const handleDelete = async (e: React.MouseEvent) => {
-    e.preventDefault();
-    if (window.confirm(`¿Estás seguro de que quieres eliminar a ${mascota.nombre}?`)) {
+  
+  const handleEliminar = async () => {
+    if (window.confirm('¿Estás seguro de que quieres eliminar esta mascota?')) {
       try {
-        const token = localStorage.getItem('token');
-        const response = await fetch(`${API_URL}/mascotas/${mascota.id}`, {
-          method: 'DELETE',
-          headers: { 'Authorization': `Bearer ${token}` },
-        });
-        if (!response.ok) throw new Error('No se pudo eliminar la mascota.');
+        await apiClient.delete(`/mascotas/${mascota.id}`);
         onMascotaEliminada(mascota.id);
       } catch (error) {
-        console.error('Error al eliminar la mascota:', error);
+        console.error("Error al eliminar la mascota:", error);
+        alert("No se pudo eliminar la mascota.");
       }
     }
   };
 
   return (
     <div className="mascota-card">
-      <Link to={`/mascotas/${mascota.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-        <img src={imageUrl} alt={`Foto de ${mascota.nombre}`} className="mascota-imagen" />
-        <div className="mascota-info">
-          <h3>{mascota.nombre}</h3>
-          <p>{mascota.especie || 'No especificada'}</p>
-        </div>
+      <Link to={`/mascotas/${mascota.id}`} className="card-image-container">
+        <img 
+          src={mascota.imagenUrls?.[0] || defaultPetImage} 
+          alt={`Foto de ${mascota.nombre}`} 
+        />
       </Link>
-      <div className="mascota-actions">
-        <Link to={`/mascotas/editar/${mascota.id}`} className="btn-edit">Editar</Link>
-        <button className="btn-delete" onClick={handleDelete}>Eliminar</button>
+      <div className="card-content">
+        <h3>{mascota.nombre}</h3>
+        <p>{mascota.especie} - {mascota.raza}</p>
+      </div>
+      <div className="card-actions">
+        {/* ✅ RUTA CORREGIDA */}
+        <Link to={`/mascotas/editar/${mascota.id}`} className="card-button edit">Editar</Link>
+        <button onClick={handleEliminar} className="card-button delete">Eliminar</button>
       </div>
     </div>
   );

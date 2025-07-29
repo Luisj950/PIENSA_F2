@@ -18,7 +18,7 @@ import EditarMascotaPage from './pages/EditarMascotaPage';
 import ChatPage from './pages/ChatPage';
 import ContactosPage from './pages/ContactosPage';
 import DetalleMascotaPage from './pages/DetalleMascotaPage';
-import AgendaPage from './pages/AgendaPage'; // ✅ 1. Se importa la nueva página
+import AgendaPage from './pages/AgendaPage';
 
 function App() {
   return (
@@ -36,13 +36,14 @@ function App() {
           <Route element={<ProtectedRoute roles={['propietario', 'admin', 'veterinario']} />}>
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/mis-mascotas" element={<MisMascotasPage />} />
-            <Route path="/añadir-mascota" element={<AddPetPage />} />
+            
+            {/* ✅ RUTA CORREGIDA */}
+            <Route path="/add-pet" element={<AddPetPage />} />
+            
             <Route path="/mascotas/editar/:id" element={<EditarMascotaPage />} />
             <Route path="/chat/:receptorId" element={<ChatPage />} />
             <Route path="/contactos" element={<ContactosPage />} />
             <Route path="/mascotas/:id" element={<DetalleMascotaPage />} />
-            
-            {/* ✅ 2. Se añade la nueva ruta para la agenda */}
             <Route path="/agenda" element={<AgendaPage />} />
           </Route>
 

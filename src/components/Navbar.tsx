@@ -16,7 +16,7 @@ const Navbar = () => {
   return (
     <nav className="navbar">
       <Link to="/" className="navbar-brand">
-        Piensa Veterinaria
+        Piensa Met Ved
       </Link>
       
       <div className="navbar-links">
